@@ -18,10 +18,18 @@ def get_weather() -> None:
     }
 
     response = requests.get(BASE_URL, params=params)
-    data = response.json()
 
-    temperature = data["current"]["temp_c"]
-    condition = data["current"]["condition"]["text"]
+    if response.status_code != 200:
+        print("ERROR: Failed to fetch weather data")
+        return
+
+    try:
+        data = response.json()
+        temperature = data["current"]["temp_c"]
+        condition = data["current"]["condition"]["text"]
+    except (KeyError, ValueError):
+        print("ERROR: Unexpected response format")
+        return
 
     print(f"Paris weather: {temperature} Celsius, {condition}")
 
